@@ -1,57 +1,56 @@
-// app.js - Hong Kong focused version
+// index.js - Home page specific code
 
-const CONFIG = {
-    // Use your Cloudflare Worker URL
-    API_URL: 'https://number-analysis-proxy.vineroz.workers.dev',
-    REFRESH_INTERVAL: 300000, // 5 minutes
-    COLORS: {
-        'red': '#ef4444',
-        'blue': '#3b82f6',
-        'green': '#10b981'
-    }
-};
-
-// State management
-let hkData = null;
-let lastUpdate = null;
-
-// Theme management
-const themeToggle = document.getElementById('themeToggle');
-const themeIcon = themeToggle.querySelector('.theme-toggle-icon');
-
-// Initialize theme
-function initTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-}
-
-// Toggle theme
-function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+// Load home page data
+async function loadHomePageData() {
+    console.log('Loading home page data...'); // Debug log
+    core.showLoading();
     
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    try {
+        await core.fetchData();
+        console.log('Data fetched successfully:', core.hkData()); // Debug log
+        displayHomePage();
+    } catch (error) {
+        console.error('Error loading data:', error); // Debug log
+        core.showError(error.message);
+    }
 }
 
-// Format date
-function formatDate(dateStr) {
-    if (!dateStr) return 'N/A';
-    try {
-        const date = new Date(dateStr.replace(/\//g, '-'));
-        return date.toLocaleString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    } catch {
-        return dateStr;
+// Display home page content
+function displayHomePage() {
+    const data = core.hkData();
+    console.log('Displaying home page with data:', data); // Debug log
+    
+    if (!data || !data.hk) {
+        core.showError('Hong Kong data not available');
+        return;
     }
+    
+    const hk = data.hk;
+    console.log('Hong Kong data:', hk); // Debug log
+    
+    // Parse data
+    const drawNumber = hk.expect;
+    const drawDate = hk.openTime;
+    const numbers = hk.openCode.split(',');
+    const waveColors = hk.wave.split(',');
+    const zodiacs = hk.zodiac.split(',');
+    
+    console.log('Parsed numbers:', numbers); // Debug log
+    console.log('Parsed colors:', waveColors); // Debug log
+    
+    // Calculate statistics
+    const stats = calculateStats(numbers);
+    console.log('Calculated stats:', stats); // Debug log
+    
+    // Display sections
+    displayLatestDraw(drawNumber, drawDate, numbers, waveColors, zodiacs);
+    displayInsights(stats, numbers);
+    displayExtraInfo(waveColors, zodiacs, numbers);
+    
+    // Hide loading, show content
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+    console.log('Display complete'); // Debug log
 }
 
 // Calculate statistics
@@ -89,41 +88,16 @@ function getZodiacEmoji(zodiac) {
     return emojis[zodiac] || '⭐';
 }
 
-// Display Hong Kong data
-function displayHongKongData(data) {
-    if (!data || !data.hk) {
-        showError('Hong Kong data not available');
+// Display latest draw
+function displayLatestDraw(drawNumber, drawDate, numbers, waveColors, zodiacs) {
+    const container = document.getElementById('latestDrawCard');
+    if (!container) {
+        console.error('latestDrawCard element not found'); // Debug log
         return;
     }
     
-    const hk = data.hk;
-    
-    // Parse data
-    const drawNumber = hk.expect;
-    const drawDate = hk.openTime;
-    const numbers = hk.openCode.split(',');
-    const waveColors = hk.wave.split(',');
-    const zodiacs = hk.zodiac.split(',');
-    
-    // Calculate statistics
-    const stats = calculateStats(numbers);
-    
-    // Display latest draw
-    displayLatestDraw(drawNumber, drawDate, numbers, waveColors, zodiacs);
-    
-    // Display insights
-    displayInsights(stats, numbers);
-    
-    // Display extra info (wave colors and zodiacs)
-    displayExtraInfo(waveColors, zodiacs, numbers);
-}
-
-// Display latest draw
-function displayLatestDraw(drawNumber, drawDate, numbers, waveColors, zodiacs) {
-    const heroSection = document.getElementById('heroSection');
-    
     const ballsHtml = numbers.map((num, index) => {
-        const color = CONFIG.COLORS[waveColors[index]] || '#6366f1';
+        const color = core.CONFIG.COLORS[waveColors[index]] || '#6366f1';
         const zodiac = zodiacs[index];
         const emoji = getZodiacEmoji(zodiac);
         return `
@@ -134,10 +108,10 @@ function displayLatestDraw(drawNumber, drawDate, numbers, waveColors, zodiacs) {
         `;
     }).join('');
     
-    document.getElementById('latestDrawCard').innerHTML = `
+    container.innerHTML = `
         <div class="draw-header-large">
             <span class="draw-number-large">Draw #${drawNumber}</span>
-            <span class="draw-date-large">${formatDate(drawDate)}</span>
+            <span class="draw-date-large">${core.formatDate(drawDate)}</span>
         </div>
         <div class="numbers-row">
             ${ballsHtml}
@@ -147,9 +121,13 @@ function displayLatestDraw(drawNumber, drawDate, numbers, waveColors, zodiacs) {
 
 // Display insights
 function displayInsights(stats, numbers) {
-    const insightsGrid = document.getElementById('insightsGrid');
+    const container = document.getElementById('insightsGrid');
+    if (!container) {
+        console.error('insightsGrid element not found'); // Debug log
+        return;
+    }
     
-    insightsGrid.innerHTML = `
+    container.innerHTML = `
         <div class="insight-card">
             <div class="insight-icon">📊</div>
             <div class="insight-title">Total Sum</div>
@@ -180,9 +158,13 @@ function displayInsights(stats, numbers) {
     `;
 }
 
-// Display extra info (wave colors and zodiacs)
+// Display extra info
 function displayExtraInfo(waveColors, zodiacs, numbers) {
-    const extraInfoGrid = document.getElementById('extraInfoGrid');
+    const container = document.getElementById('extraInfoGrid');
+    if (!container) {
+        console.error('extraInfoGrid element not found'); // Debug log
+        return;
+    }
     
     // Count wave colors
     const colorCount = waveColors.reduce((acc, color) => {
@@ -191,9 +173,14 @@ function displayExtraInfo(waveColors, zodiacs, numbers) {
     }, {});
     
     // Find dominant color
-    const dominantColor = Object.entries(colorCount).reduce((a, b) => 
-        a[1] > b[1] ? a : b
-    )[0];
+    let dominantColor = 'red';
+    let maxCount = 0;
+    Object.entries(colorCount).forEach(([color, count]) => {
+        if (count > maxCount) {
+            maxCount = count;
+            dominantColor = color;
+        }
+    });
     
     // Count zodiacs
     const zodiacCount = zodiacs.reduce((acc, zodiac) => {
@@ -206,12 +193,16 @@ function displayExtraInfo(waveColors, zodiacs, numbers) {
         .filter(([_, count]) => count > 1)
         .map(([zodiac, count]) => `${zodiac} (${count}x)`);
     
-    extraInfoGrid.innerHTML = `
+    const numbersArray = numbers.map(n => parseInt(n));
+    const maxNum = Math.max(...numbersArray);
+    const minNum = Math.min(...numbersArray);
+    
+    container.innerHTML = `
         <div class="extra-info-card">
             <div class="extra-info-label">Wave Color Distribution</div>
             <div class="extra-info-value">
                 ${Object.entries(colorCount).map(([color, count]) => 
-                    `<span style="color: ${CONFIG.COLORS[color]}">●</span> ${count}`
+                    `<span style="color: ${core.CONFIG.COLORS[color]}">●</span> ${count}`
                 ).join(' ')}
             </div>
             <div class="extra-info-tag ${dominantColor === 'red' ? 'tag-red' : dominantColor === 'blue' ? 'tag-blue' : 'tag-green'}">
@@ -242,89 +233,21 @@ function displayExtraInfo(waveColors, zodiacs, numbers) {
         <div class="extra-info-card">
             <div class="extra-info-label">Number Range Spread</div>
             <div class="extra-info-value">
-                ${Math.max(...numbers.map(n => parseInt(n)))} / ${Math.min(...numbers.map(n => parseInt(n)))}
+                ${maxNum} / ${minNum}
             </div>
             <div class="extra-info-tag tag-blue">
-                Range: ${Math.max(...numbers.map(n => parseInt(n))) - Math.min(...numbers.map(n => parseInt(n)))}
+                Range: ${maxNum - minNum}
             </div>
         </div>
     `;
 }
 
-// Fetch data from Cloudflare Worker
-async function fetchData() {
-    try {
-        const response = await fetch(CONFIG.API_URL);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        hkData = data;
-        lastUpdate = new Date();
-        
-        return data;
-    } catch (error) {
-        console.error('Fetch error:', error);
-        throw error;
-    }
-}
+// Make refresh function available globally
+window.refreshCurrentPage = loadHomePageData;
 
-// Update UI
-function updateUI() {
-    if (hkData) {
-        displayHongKongData(hkData);
-        document.getElementById('lastUpdated').textContent = 
-            `Last updated: ${lastUpdate.toLocaleString()}`;
-    }
-}
-
-// Show loading state
-function showLoading() {
-    document.getElementById('loading').style.display = 'block';
-    document.getElementById('content').style.display = 'none';
-    document.getElementById('error').style.display = 'none';
-}
-
-// Show error state
-function showError(message) {
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('content').style.display = 'none';
-    
-    const errorDiv = document.getElementById('error');
-    errorDiv.style.display = 'block';
-    errorDiv.textContent = `⚠️ Error: ${message}. Please try again.`;
-}
-
-// Main load function
-async function loadData() {
-    showLoading();
-    
-    try {
-        await fetchData();
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('content').style.display = 'block';
-        updateUI();
-    } catch (error) {
-        showError(error.message);
-    }
-}
-
-// Initialize app
-function initApp() {
-    initTheme();
-    
-    // Event listeners
-    themeToggle.addEventListener('click', toggleTheme);
-    document.getElementById('refreshBtn').addEventListener('click', loadData);
-    
-    // Initial load
-    loadData();
-    
-    // Auto-refresh
-    setInterval(loadData, CONFIG.REFRESH_INTERVAL);
-}
-
-// Start app when DOM is ready
-document.addEventListener('DOMContentLoaded', initApp);
+// Initialize page
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Index page DOM loaded'); // Debug log
+    core.initCommon();
+    loadHomePageData();
+});

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Analysis - Color Reference</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <style>
+        /* Additional compact styles for reference grid */
+        .reference-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        
+        .reference-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+        
+        .reference-card {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 8px 4px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease;
+        }
+        
+        .reference-card:hover {
+            transform: scale(1.05);
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .number-large {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+        
+        .color-indicator {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 5px auto;
+            border: 2px solid var(--border-color);
+        }
+        
+        .color-name {
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .legend-panel {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .legend-title {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+        
+        .legend-items {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+        
+        @media (max-width: 768px) {
+            .reference-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .reference-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .number-large {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar (same as before) -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">🔢</div>
+                <div class="sidebar-title">Number Analysis</div>
+                <button class="sidebar-toggle" id="sidebarToggle">◀</button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-text">Home</span>
+                </a>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Reference Maps</div>
+                    <a href="color-map.html" class="nav-item active">
+                        <span class="nav-icon">🎨</span>
+                        <span class="nav-text">Color Reference</span>
+                    </a>
+                    <a href="zodiac-map.html" class="nav-item">
+                        <span class="nav-icon">🐉</span>
+                        <span class="nav-text">Zodiac Reference</span>
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Analysis Tools</div>
+                    <a href="#" class="nav-item disabled">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Frequency Analysis</span>
+                    </a>
+                    <a href="#" class="nav-item disabled">
+                        <span class="nav-icon">📈</span>
+                        <span class="nav-text">Pattern Detection</span>
+                    </a>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="theme-toggle-mini" id="themeToggleMini">
+                    <span class="theme-icon">🌙</span>
+                </div>
+                <div class="data-status" id="dataStatus">
+                    <span class="status-dot"></span>
+                    Static
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <header class="content-header">
+                <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+                <h1 class="page-title">Color Reference Map</h1>
+                <div class="header-actions">
+                    <span class="badge">Static Reference</span>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <div class="reference-container">
+                    <!-- Color Grid for Numbers 1-49 -->
+                    <div class="reference-grid" id="colorGrid"></div>
+                    
+                    <!-- Legend Panel -->
+                    <div class="legend-panel">
+                        <div class="legend-title">🎨 Wave Color Legend</div>
+                        <div class="legend-items">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #ef4444"></div>
+                                <span>Red Wave</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #3b82f6"></div>
+                                <span>Blue Wave</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #10b981"></div>
+                                <span>Green Wave</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="content-footer">
+                <p class="footer-note">Static reference map - Numbers 1-49 with their corresponding wave colors</p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // Simple static color mapping for numbers 1-49
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize theme from core if available
+            if (window.core) {
+                core.initCommon();
+            }
+            
+            const colorGrid = document.getElementById('colorGrid');
+            
+            // Generate numbers 1-49
+            for (let i = 1; i <= 49; i++) {
+                // Determine color based on number (this is based on actual wave color patterns)
+                // Red: 1-9, 19-28, 37-42
+                // Blue: 10-18, 29-36, 43-47
+                // Green: 48-49 and some special numbers
+                let color = '#ef4444'; // default red
+                let colorName = 'Red';
+                
+                if ((i >= 10 && i <= 18) || (i >= 29 && i <= 36) || (i >= 43 && i <= 47)) {
+                    color = '#3b82f6';
+                    colorName = 'Blue';
+                } else if (i >= 48 || [21, 25, 33, 41].includes(i)) {
+                    color = '#10b981';
+                    colorName = 'Green';
+                }
+                
+                const card = document.createElement('div');
+                card.className = 'reference-card';
+                card.innerHTML = `
+                    <div class="number-large">${i}</div>
+                    <div class="color-indicator" style="background: ${color}"></div>
+                    <div class="color-name">${colorName}</div>
+                `;
+                
+                colorGrid.appendChild(card);
+            }
+        });
+    </script>
+</body>
+</html>
