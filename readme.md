@@ -11,7 +11,7 @@ A real-time statistical analysis tool for numerical sequences from various regio
 - 📈 Statistical insights (sum, odd/even, high/low ratios)
 
 ## Live Demo
-Visit: [Your GitHub Pages URL]
+Visit: (https://a1-freeman.github.io/NumberAnalysis/)
 
 ## Technologies Used
 - HTML5

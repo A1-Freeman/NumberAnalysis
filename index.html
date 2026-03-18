@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Number Analysis - Hong Kong</title>
+    
+    <!-- Global styles (themes, base, utilities) -->
     <link rel="stylesheet" href="css/style.css">
+    <!-- Consistent sidebar across all pages -->
     <link rel="stylesheet" href="css/sidebar.css">
+    <!-- Home page specific styles -->
+    <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar -->
+        <!-- Sidebar - same structure across all pages -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo">🔢</div>
@@ -17,40 +22,32 @@
                 <button class="sidebar-toggle" id="sidebarToggle">◀</button>
             </div>
             
-            <nav class="sidebar-nav">
-                <a href="index.html" class="nav-item active">
-                    <span class="nav-icon">🏠</span>
-                    <span class="nav-text">Home</span>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item active">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Home</span>
+            </a>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Reference Maps</div>
+                <a href="color-map.html" class="nav-item">
+                    <span class="nav-icon">🎨</span>
+                    <span class="nav-text">Color Reference</span>
                 </a>
-                
-                <div class="nav-section">
-                    <div class="nav-section-title">Analysis Tools</div>
-                    <a href="color-map.html" class="nav-item">
-                        <span class="nav-icon">🎨</span>
-                        <span class="nav-text">Color Map</span>
-                    </a>
-                    <a href="zodiac-map.html" class="nav-item">
-                        <span class="nav-icon">🐉</span>
-                        <span class="nav-text">Zodiac Map</span>
-                    </a>
-                </div>
-                
-                <div class="nav-section">
-                    <div class="nav-section-title">Coming Soon</div>
-                    <a href="#" class="nav-item disabled">
-                        <span class="nav-icon">📊</span>
-                        <span class="nav-text">Frequency Analysis</span>
-                    </a>
-                    <a href="#" class="nav-item disabled">
-                        <span class="nav-icon">📈</span>
-                        <span class="nav-text">Pattern Detection</span>
-                    </a>
-                    <a href="#" class="nav-item disabled">
-                        <span class="nav-icon">🔮</span>
-                        <span class="nav-text">Predictions</span>
-                    </a>
-                </div>
-            </nav>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Analysis Tools</div>
+                <a href="#" class="nav-item disabled">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Frequency Analysis</span>
+                </a>
+                <a href="#" class="nav-item disabled">
+                    <span class="nav-icon">📈</span>
+                    <span class="nav-text">Pattern Detection</span>
+                </a>
+            </div>
+        </nav>
             
             <div class="sidebar-footer">
                 <div class="theme-toggle-mini" id="themeToggleMini">
@@ -77,48 +74,47 @@
             </header>
 
             <div class="content-body">
-                <div id="loading" class="loading-state">
-                    <div class="spinner"></div>
-                    <p>Loading analysis data...</p>
-                </div>
+                <div class="home-container">
+                    <!-- Loading State -->
+                    <div id="loading" class="loading-state">
+                        <div class="spinner"></div>
+                        <p>Loading latest draw data...</p>
+                    </div>
 
-                <div id="error" class="error-state" style="display: none;"></div>
+                    <!-- Error State -->
+                    <div id="error" class="error-state" style="display: none;"></div>
 
-                <div id="content" style="display: none;">
-                    <!-- Hero Section with Latest Draw -->
-                    <section class="hero-section" id="heroSection">
-                        <h2 class="section-title">Latest Draw</h2>
-                        <div class="latest-draw-card" id="latestDrawCard">
-                            <!-- Filled by JavaScript -->
-                        </div>
-                    </section>
+                    <!-- Main Content -->
+                    <div id="content" style="display: none;">
+                        <!-- Latest Draw Section -->
+                        <section class="latest-draw-section">
+                            <h2 class="section-title">Latest Draw</h2>
+                            <div id="latestDraw"></div>
+                        </section>
 
-                    <!-- Quick Stats Section -->
-                    <section class="stats-section">
-                        <h2 class="section-title">Quick Insights</h2>
-                        <div class="insights-grid" id="insightsGrid">
-                            <!-- Filled by JavaScript -->
-                        </div>
-                    </section>
+                        <!-- Statistics Section -->
+                        <section class="latest-draw-section">
+                            <h2 class="section-title">Draw Statistics</h2>
+                            <div id="statistics"></div>
+                        </section>
 
-                    <!-- API Extra Info Section -->
-                    <section class="extra-info-section">
-                        <h2 class="section-title">Additional Data Points</h2>
-                        <div class="info-cards-grid" id="extraInfoGrid">
-                            <!-- Filled by JavaScript -->
-                        </div>
-                    </section>
+                        <!-- Additional Information -->
+                        <section class="latest-draw-section">
+                            <h2 class="section-title">Additional Information</h2>
+                            <div id="additionalInfo"></div>
+                        </section>
+                    </div>
                 </div>
             </div>
 
             <footer class="content-footer">
                 <div id="lastUpdated" class="last-updated"></div>
-                <p class="footer-note">Data updates automatically every 5 minutes • Source: Public API</p>
+                <p class="footer-note">Data from public API • Updates every 5 minutes</p>
             </footer>
         </main>
     </div>
 
-    <!-- Core functionality first -->
+    <!-- Core functionality (shared across all pages) -->
     <script src="js/core.js"></script>
     <!-- Home page specific JavaScript -->
     <script src="js/index.js"></script>
