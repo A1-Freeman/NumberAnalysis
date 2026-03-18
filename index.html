@@ -5,16 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Number Analysis - Hong Kong</title>
     
-    <!-- Global styles (themes, base, utilities) -->
+    <!-- Global styles -->
     <link rel="stylesheet" href="css/style.css">
-    <!-- Consistent sidebar across all pages -->
     <link rel="stylesheet" href="css/sidebar.css">
-    <!-- Home page specific styles -->
     <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar - same structure across all pages -->
+        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo">🔢</div>
@@ -22,32 +20,32 @@
                 <button class="sidebar-toggle" id="sidebarToggle">◀</button>
             </div>
             
-        <nav class="sidebar-nav">
-            <a href="index.html" class="nav-item active">
-                <span class="nav-icon">🏠</span>
-                <span class="nav-text">Home</span>
-            </a>
-            
-            <div class="nav-section">
-                <div class="nav-section-title">Reference Maps</div>
-                <a href="color-map.html" class="nav-item">
-                    <span class="nav-icon">🎨</span>
-                    <span class="nav-text">Color Reference</span>
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item active">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-text">Home</span>
                 </a>
-            </div>
-            
-            <div class="nav-section">
-                <div class="nav-section-title">Analysis Tools</div>
-                <a href="#" class="nav-item disabled">
-                    <span class="nav-icon">📊</span>
-                    <span class="nav-text">Frequency Analysis</span>
-                </a>
-                <a href="#" class="nav-item disabled">
-                    <span class="nav-icon">📈</span>
-                    <span class="nav-text">Pattern Detection</span>
-                </a>
-            </div>
-        </nav>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Reference Maps</div>
+                    <a href="color-map.html" class="nav-item">
+                        <span class="nav-icon">🎨</span>
+                        <span class="nav-text">Color Reference</span>
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Analysis Tools</div>
+                    <a href="#" class="nav-item disabled">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Frequency Analysis</span>
+                    </a>
+                    <a href="#" class="nav-item disabled">
+                        <span class="nav-icon">📈</span>
+                        <span class="nav-text">Pattern Detection</span>
+                    </a>
+                </div>
+            </nav>
             
             <div class="sidebar-footer">
                 <div class="theme-toggle-mini" id="themeToggleMini">
@@ -78,7 +76,7 @@
                     <!-- Loading State -->
                     <div id="loading" class="loading-state">
                         <div class="spinner"></div>
-                        <p>Loading latest draw data...</p>
+                        <p>Loading data...</p>
                     </div>
 
                     <!-- Error State -->
@@ -86,22 +84,118 @@
 
                     <!-- Main Content -->
                     <div id="content" style="display: none;">
-                        <!-- Latest Draw Section -->
-                        <section class="latest-draw-section">
-                            <h2 class="section-title">Latest Draw</h2>
-                            <div id="latestDraw"></div>
+                        <!-- Top Row: Latest Draw + Quick Stats -->
+                        <div class="top-row">
+                            <!-- Latest Draw Section -->
+                            <section class="latest-draw-section">
+                                <h2 class="section-title">📅 Latest Draw</h2>
+                                <div id="latestDraw"></div>
+                            </section>
+
+                            <!-- Quick Stats Section -->
+                            <section class="latest-draw-section">
+                                <h2 class="section-title">📊 Quick Stats</h2>
+                                <div class="quick-stats-grid" id="quickStats"></div>
+                            </section>
+                        </div>
+
+                        <!-- Query Section -->
+                        <section class="query-section">
+                            <h2 class="section-title">🔍 Query Historical Draws</h2>
+                            
+                            <!-- Query Type Selector -->
+                            <div class="query-type-selector">
+                                <label class="query-option">
+                                    <input type="radio" name="queryType" value="single" checked>
+                                    <span>Single Draw</span>
+                                </label>
+                                <label class="query-option">
+                                    <input type="radio" name="queryType" value="range">
+                                    <span>Date Range</span>
+                                </label>
+                                <label class="query-option">
+                                    <input type="radio" name="queryType" value="recent">
+                                    <span>Most Recent</span>
+                                </label>
+                            </div>
+
+                            <!-- Query Inputs -->
+                            <div class="query-inputs">
+                                <!-- Single Draw Input -->
+                                <div class="input-group" id="singleInput">
+                                    <label>Draw Number:</label>
+                                    <input type="text" id="drawNumber" placeholder="e.g., 2026028">
+                                </div>
+
+                                <!-- Date Range Input (hidden by default) -->
+                                <div class="input-group" id="rangeInput" style="display: none;">
+                                    <label>Date Range:</label>
+                                    <div class="date-range">
+                                        <input type="date" id="dateFrom">
+                                        <span>to</span>
+                                        <input type="date" id="dateTo">
+                                    </div>
+                                </div>
+
+                                <!-- Recent Draws Input (hidden by default) -->
+                                <div class="input-group" id="recentInput" style="display: none;">
+                                    <label>Number of draws:</label>
+                                    <div class="slider-group">
+                                        <input type="range" id="recentSlider" min="1" max="50" value="5">
+                                        <span class="slider-value" id="recentValue">5</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="query-actions">
+                                <button class="btn btn-primary" id="searchBtn">🔍 Search</button>
+                                <button class="btn btn-secondary" id="clearBtn">✕ Clear</button>
+                            </div>
                         </section>
 
-                        <!-- Statistics Section -->
-                        <section class="latest-draw-section">
-                            <h2 class="section-title">Draw Statistics</h2>
-                            <div id="statistics"></div>
+                        <!-- Special Filters Section -->
+                        <section class="special-filters">
+                            <h2 class="section-title">⭐ Special Filters</h2>
+                            <div class="filters-grid">
+                                <div class="filter-chip" data-filter="snowball">
+                                    <span class="chip-icon">🏆</span>
+                                    <span>Snowball Draws</span>
+                                </div>
+                                <div class="filter-chip" data-filter="jackpot">
+                                    <span class="chip-icon">🎯</span>
+                                    <span>Jackpot Rounds</span>
+                                </div>
+                                <div class="filter-chip" data-filter="high-payout">
+                                    <span class="chip-icon">📈</span>
+                                    <span>High Payout</span>
+                                </div>
+                                <div class="filter-chip" data-filter="festival">
+                                    <span class="chip-icon">🎪</span>
+                                    <span>Festival Specials</span>
+                                </div>
+                                <div class="filter-chip" data-filter="new-year">
+                                    <span class="chip-icon">✨</span>
+                                    <span>New Year Special</span>
+                                </div>
+                            </div>
                         </section>
 
-                        <!-- Additional Information -->
-                        <section class="latest-draw-section">
-                            <h2 class="section-title">Additional Information</h2>
-                            <div id="additionalInfo"></div>
+                        <!-- Results Section -->
+                        <section class="results-section">
+                            <div class="results-header">
+                                <h2 class="section-title">📋 Results</h2>
+                                <span class="results-count" id="resultsCount">Loading...</span>
+                            </div>
+                            
+                            <div class="results-grid" id="resultsGrid"></div>
+                            
+                            <!-- Pagination -->
+                            <div class="pagination">
+                                <button class="pagination-btn" id="prevPage" disabled>← Previous</button>
+                                <span class="page-info" id="pageInfo">Page 1 of 1</span>
+                                <button class="pagination-btn" id="nextPage" disabled>Next →</button>
+                            </div>
                         </section>
                     </div>
                 </div>
@@ -114,7 +208,7 @@
         </main>
     </div>
 
-    <!-- Core functionality (shared across all pages) -->
+    <!-- Core functionality -->
     <script src="js/core.js"></script>
     <!-- Home page specific JavaScript -->
     <script src="js/index.js"></script>
